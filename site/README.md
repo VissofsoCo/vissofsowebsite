@@ -1,11 +1,18 @@
 # VISSOFSO — website
 
-Next.js 15 (App Router), TypeScript and Tailwind CSS 4. Six pages: Home,
-Services, Solutions, About, Careers, Contact, plus a 404. No 3D, no scroll
-animation — the pages are static and render instantly.
+Next.js 16 (App Router), React 19, TypeScript and Tailwind CSS 4. Seven pages:
+Home, Services, Solutions, About, Team, Careers, Contact, plus a 404. Every
+route prerenders as static content.
 
-Built to the VISSOFSO design style guide: Space Grotesk headings, Inter body,
-Montserrat wordmark, a monochrome palette and pill buttons.
+Built to the VISSOFSO design style guide: Inter throughout, a monochrome
+palette and pill buttons.
+
+No 3D. Motion is limited to two things: sections settle into place as they
+scroll into view (`Reveal`), and buttons show a highlight travelling around
+their border on hover. Both are dropped entirely under
+`prefers-reduced-motion`.
+
+Requires Node 20.9 or newer; built and tested on Node 24.
 
 ## Run it
 
@@ -16,13 +23,20 @@ npm run dev
 
 Open http://localhost:3000.
 
-## Fill in these placeholders
+## Still to fill in
 
-In `src/data/company.ts`, replace everything marked `TODO`:
+In `src/data/company.ts` these are `null` or empty, and anything unset is
+simply not rendered — no placeholder ever reaches a visitor:
 
-- `phone` / `phoneHref` — display number, and the `tel:` version (digits and `+` only)
-- `address` — your office address
-- `social` — real LinkedIn / Instagram / GitHub URLs, or delete the ones you don't use
+- `phone` / `phoneHref` — display number, and the `tel:` version (digits and `+` only).
+  Setting these makes the phone card appear on Contact and adds the number to
+  the footer; the Contact page's own wording switches from "send us a note" to
+  "email or call".
+- `address` — adds the Office block on Contact.
+- `social` — adds the row of links in the footer. Entries look like
+  `{ label: 'LinkedIn', href: 'https://www.linkedin.com/company/…' }`.
+- `team` — the Team page shows an honest "profiles are on the way" state until
+  this array has entries. `bio`, `photo` and `linkedin` are each optional.
 
 `email` is set to `vissofso@gmail.com` — change it if that isn't the address to
 list publicly.
@@ -85,12 +99,43 @@ All design tokens live at the top of `src/app/globals.css`:
   `--color-soft-white`) plus the semantic roles `--color-ink` (#101114 primary
   text and filled buttons), `--color-slate` (#555B63 secondary text) and
   `--color-line` (#D1D5DB borders).
-- `:root` holds layout rhythm: `--container-width` (1280px),
+- `:root` holds layout rhythm: `--container-width` (1600px),
   `--section-spacing` (120px), `--button-radius` (pill) and `--card-radius`.
 
-Three faces load through `next/font` in `src/app/layout.tsx`: Space Grotesk
-(headings, bold), Inter (body and navigation) and Montserrat (wordmark and the
-wide-tracked labels, via the `.brand-mark` and `.tracking-brand` classes).
+One face loads through `next/font` in `src/app/layout.tsx`: Inter. The
+`--font-display` and `--font-brand` tokens point at it too, so headings and the
+wide-tracked labels (`.brand-mark`, `.tracking-brand`) differ by weight and
+letter-spacing rather than by typeface.
+
+The type scale is redefined in `@theme` on a 1.2 ratio anchored at an 18px
+body, one step up from Tailwind's defaults — change `--text-*` there and every
+`text-` utility moves together.
+
+## Buttons
+
+Every CTA goes through `src/components/ui/Button.tsx` — including the navbar
+and the 404, which were once hand-written copies that drifted on padding,
+weight and hover treatment. Use it rather than restyling a `Link`.
+
+```tsx
+<Button href="/contact">Get Started</Button>
+<Button href="/services" variant="secondary">Explore Services</Button>
+<Button href="/contact" sheen={false}>No highlight</Button>
+```
+
+The travelling highlight is on by default and runs only while hovered or
+keyboard-focused. It is pure CSS (`.sheen-track` in `globals.css`), so Button
+stays a server component and costs no JavaScript.
+
+Its colour must contrast with the button's own fill: the default head is
+gunmetal-to-ink for light buttons, and `.sheen-dot--on-ink` inverts it to white
+for ink-filled ones. A light highlight on a light button animates perfectly and
+is invisible — that bug shipped once already.
+
+One trap when wrapping Button: its base classes include `inline-flex`, so a
+`hidden` passed through `className` will not hide it. Tailwind orders utilities
+by stylesheet position, not attribute order. Put responsive display on a
+wrapper element instead, as the navbar does.
 
 ## Careers page
 

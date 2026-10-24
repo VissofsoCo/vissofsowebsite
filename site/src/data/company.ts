@@ -1,7 +1,8 @@
 // ─────────────────────────────────────────────────────────────
 // Every piece of copy on the site lives here. Edit this file to
 // change text, contact details or the service list.
-// Entries marked TODO are placeholders; replace them.
+// Fields left null or empty are not rendered at all, so the site never
+// shows a placeholder — fill one in and it appears automatically.
 // ─────────────────────────────────────────────────────────────
 
 export const company = {
