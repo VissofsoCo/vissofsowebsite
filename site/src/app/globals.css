@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+/* ── VISSOFSO design tokens ─────────────────────────────────────
+   Monochromatic luxury-technology palette: cool greys, metallic
+   highlights, no colour accent. Values from the brand style guide.
+   Change them here to restyle the whole site.                  */
+@theme {
+  /* Greyscale ramp */
+  --color-black: #000000;
+  --color-charcoal: #17191b;
+  --color-graphite: #303236;
+  --color-gunmetal: #50545a;
+  --color-silver: #a9acb0;
+  --color-cool-silver: #c9cdd2;
+  --color-pearl: #e6e7e9;
+  --color-soft-white: #f5f5f4;
+  --color-white: #ffffff;
+  --color-warm-light: #f1ebe4;
+
+  /* Semantic roles */
+  --color-ink: #101114;          /* primary text, filled buttons  */
+  --color-slate: #555b63;        /* secondary text                */
+  --color-line: #d1d5db;         /* borders and dividers          */
+
+  /* Typography */
+  /* One face across the whole site. The display and brand roles are kept as
+     separate variables so weight and tracking can still differ per role. */
+  --font-sans: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-sans);
+  --font-brand: var(--font-sans);
+
+  /* Type scale. Tailwind's defaults read small against the oversized
+     headline, so the whole ramp is redefined one step up on a consistent
+     1.2 ratio anchored at an 18px body. Every text-* utility moves
+     together, so the relationships between sizes are unchanged. */
+  --text-xs: 0.8125rem;        /* 13px */
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;        /* 15px */
+  --text-sm--line-height: 1.55;
+  --text-base: 1.125rem;       /* 18px */
+  --text-base--line-height: 1.65;
+  --text-lg: 1.3125rem;        /* 21px */
+  --text-lg--line-height: 1.55;
+  --text-xl: 1.5rem;           /* 24px */
+  --text-xl--line-height: 1.4;
+  --text-2xl: 1.875rem;        /* 30px */
+  --text-2xl--line-height: 1.3;
+  --text-3xl: 2.25rem;         /* 36px */
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.75rem;         /* 44px */
+  --text-4xl--line-height: 1.15;
+  --text-5xl: 3.5rem;          /* 56px */
+  --text-5xl--line-height: 1.05;
+  --text-6xl: 4.25rem;         /* 68px */
+  --text-6xl--line-height: 1;
+  --text-7xl: 5rem;            /* 80px */
+  --text-7xl--line-height: 1;
+  --text-8xl: 6.5rem;          /* 104px */
+  --text-8xl--line-height: 1;
+}
+
+/* Layout rhythm, kept as plain variables so they can be used in
+   calc() and arbitrary values as well as through utilities. */
+:root {
+  /* The style guide suggests 1280–1440px, but on a wide monitor that leaves
+     very large empty gutters, so the content extends further both ways. */
+  --container-width: 1600px;
+  --section-spacing: 120px;
+  --button-radius: 9999px;
+  --card-radius: 16px;
+  --transition-fast: 0.3s ease;
+  --transition-smooth: 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-soft-white);
+}
+
+body {
+  background-color: var(--color-soft-white);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Wordmark and small labels use the brand face with wide tracking */
+.brand-mark {
+  font-family: var(--font-brand);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.tracking-brand {
+  font-family: var(--font-brand);
+  font-weight: 500;
+  letter-spacing: 0.35em;
+}
+
+/* The headline's second line fades to silver, as in the brand render */
+.text-fade {
+  background-image: linear-gradient(100deg, #101114 0%, #303236 36%, #a9acb0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/*
+ * The light studio environment behind the hero.
+ *
+ * Built in CSS rather than cropped from the brand render, because that render
+ * has the nav, headline and wordmark baked into it. Three layers: a vertical
+ * tone ramp, faint vertical seams standing in for the architectural panels,
+ * and a warm lift near the horizon.
+ */
+.studio {
+  background-color: var(--color-soft-white);
+  background-image:
+    radial-gradient(ellipse 60% 45% at 62% 58%, rgba(255, 255, 255, 0.95), transparent 70%),
+    radial-gradient(ellipse 70% 30% at 50% 62%, rgba(241, 235, 228, 0.5), transparent 75%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.85) 0 0.12%, transparent 0.12%),
+    linear-gradient(90deg, rgba(169, 172, 176, 0.22) 0 0.1%, transparent 0.1%),
+    linear-gradient(180deg, #c9cdd2 0%, #e6e7e9 38%, #fdfdfd 72%, #f5f5f4 100%);
+  background-size: 100% 100%, 100% 100%, 19% 100%, 7.5% 100%, 100% 100%;
+  background-position: center, center, 0 0, 3% 0, center;
+}
+
+/* Horizon seam where the back wall meets the reflective floor */
+.studio-floor {
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.9) 14%,
+    rgba(201, 205, 210, 0.5) 16%,
+    rgba(252, 252, 253, 0.85) 40%,
+    rgba(230, 231, 233, 0.7) 100%
+  );
+}
+
+/* Frosted panel used for cards and grouped content */
+.glass {
+  background-color: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-line);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 3px;
+}
+
+/* ── Scroll reveal ──────────────────────────────────────────────
+   Elements start slightly offset and transparent, then settle when
+   they enter the viewport. The offset direction is set per element
+   with data-reveal="left" | "right" | "up". Movement is small and
+   opacity does most of the work, so the page reads as calm rather
+   than busy.
+
+   No-JS and reduced-motion both fall back to the settled state, so
+   content is never left invisible. */
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity var(--transition-smooth),
+    transform var(--transition-smooth);
+  will-change: opacity, transform;
+}
+/* Below the sm breakpoint every reveal settles upward. A sideways start
+   offset on a narrow screen pushes the element past the viewport edge and
+   produces horizontal scroll for as long as the transition is unsettled,
+   which is worse than the effect is worth at that width. */
+[data-reveal='left'],
+[data-reveal='right'],
+[data-reveal='up'] {
+  transform: translate3d(0, 1.75rem, 0);
+}
+
+@media (min-width: 640px) {
+  [data-reveal='left']  { transform: translate3d(-2.5rem, 0, 0); }
+  [data-reveal='right'] { transform: translate3d(2.5rem, 0, 0); }
+}
+
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Without JavaScript the observer never runs, so the reveal is opted out of
+   entirely rather than leaving the page blank. */
+.no-js [data-reveal] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Staggered children: each step delays a little more than the last. */
+[data-reveal-delay='1'] { transition-delay: 0.08s; }
+[data-reveal-delay='2'] { transition-delay: 0.16s; }
+[data-reveal-delay='3'] { transition-delay: 0.24s; }
+[data-reveal-delay='4'] { transition-delay: 0.32s; }
+
+/* ── Button sheen ───────────────────────────────────────────────
+   A highlight that travels once around the button's border on
+   hover. The ring is drawn by a transparent 2px border whose box is
+   masked to the border area only, so the travelling dot is visible
+   just along the edge and never over the label.
+
+   offset-path/offset-distance do the movement, so this needs no
+   JavaScript and the button stays a server component. The animation
+   is paused until hover, and plays while the pointer stays on or
+   the button is focused. */
+.sheen-track {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  border: 2px solid transparent;
+  border-radius: inherit;
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  mask-image: linear-gradient(transparent, transparent), linear-gradient(#000, #000);
+}
+
+.sheen-dot {
+  position: absolute;
+  aspect-ratio: 1;
+  width: 22px;
+  border-radius: 9999px;
+  /* Reads as a comet: transparent tail into a solid head. The default is
+     dark because the buttons that use it (secondary, outline) sit on white
+     or near-white — a silver head on a white button is invisible, which is
+     the mistake this replaces. */
+  background: linear-gradient(90deg, transparent, var(--color-gunmetal), var(--color-ink));
+  offset-path: rect(0 auto auto 0 round 9999px);
+  offset-distance: 0%;
+  opacity: 0;
+  animation: sheen-travel 1.4s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Inverted for ink-filled buttons, where a dark head would vanish. */
+.sheen-dot--on-ink {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), #ffffff);
+}
+
+.group:hover .sheen-dot,
+.group:focus-visible .sheen-dot {
+  opacity: 1;
+  animation-play-state: running;
+}
+
+@keyframes sheen-travel {
+  from { offset-distance: 0%; }
+  to { offset-distance: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  /* Show revealed content outright rather than animating it quickly. */
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  /* A dot racing round the border is decoration, so drop it entirely
+     rather than running it at 0.01ms. */
+  .sheen-dot {
+    display: none;
+  }
+}
