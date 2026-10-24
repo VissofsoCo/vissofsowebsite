@@ -1,0 +1,22 @@
+# macOS Finder metadata — recreated constantly, never wanted in the repo.
+.DS_Store
+**/.DS_Store
+
+# Editor and OS noise
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Secrets — the 21st MCP key and anything like it belong in the environment,
+# not in a committed file.
+.env
+.env.*
+!.env.example
+.mcp.json
+
+# Dependencies and build output live under site/, which has its own
+# .gitignore; these are a backstop in case the project is ever restructured.
+node_modules/
+.next/
+out/
