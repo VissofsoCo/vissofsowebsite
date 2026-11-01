@@ -4,6 +4,7 @@ import { company, highlights } from '@/data/company'
 import Reveal from '@/components/ui/Reveal'
 import Icon from '@/components/ui/Icon'
 import Button from '@/components/ui/Button'
+import TiltLockup from '@/components/home/TiltLockup'
 
 export default function Hero() {
   return (
@@ -80,22 +81,7 @@ export default function Hero() {
               reproduced with a webfont. The source render came on an opaque
               studio backing; that was keyed out to real transparency, so no
               blend mode is needed and it composites cleanly over the plate. */}
-          <div className="relative flex items-center justify-center lg:justify-end">
-            <Image
-              src="/images/lockup.png"
-              alt=""
-              aria-hidden="true"
-              width={2400}
-              height={696}
-              priority
-              /* Without this, next/image cannot know the rendered width and
-                 serves a candidate far smaller than the slot — the lockup was
-                 arriving at 850px for a 966px box. These mirror the max-w
-                 steps on the class below. */
-              sizes="(min-width: 1280px) 62rem, (min-width: 1024px) 48rem, (min-width: 640px) 40rem, 90vw"
-              className="w-full max-w-[30rem] drop-shadow-[0_18px_44px_rgba(16,17,20,0.18)] sm:max-w-[40rem] lg:max-w-[48rem] xl:max-w-[62rem]"
-            />
-          </div>
+          <TiltLockup />
         </div>
 
         {/* Strapline, right-aligned as in the brand layout */}

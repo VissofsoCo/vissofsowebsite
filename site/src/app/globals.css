@@ -254,6 +254,69 @@ body {
   to { offset-distance: 100%; }
 }
 
+/* ── Hero lockup: cursor-reactive depth ─────────────────────────────
+   The mark tilts a few degrees towards the pointer and a specular
+   glint tracks across it. All five values are written as custom
+   properties from TiltLockup, so the only work per frame is a
+   compositor transform and one gradient position — no layout, and
+   no canvas.
+
+   At rest every value is neutral, which is also the state a touch
+   device, a keyboard user and reduced motion all stay in. */
+.lockup-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  display: flex;
+  justify-content: center;
+}
+
+@media (min-width: 1024px) {
+  .lockup-stage { justify-content: flex-end; }
+}
+
+.lockup-tilt {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --shift-x: 0px;
+  --shift-y: 0px;
+  --glint-x: 50%;
+  --glint-y: 50%;
+  --glint-opacity: 0;
+
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y))
+    translate3d(var(--shift-x), var(--shift-y), 0);
+  /* Long enough that the mark trails the cursor rather than snapping to
+     it — the lag is what makes it feel like a physical object. */
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* The glint is masked by the lockup's own alpha, so it lights only the
+   chrome letterforms and never the transparent box around them. Without
+   the mask it reads as a smudge floating over the plate. */
+.lockup-glint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 32% at var(--glint-x) var(--glint-y),
+    rgba(255, 255, 255, 0.85),
+    rgba(255, 255, 255, 0.25) 45%,
+    transparent 72%
+  );
+  mask-image: url('/images/lockup.png');
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: url('/images/lockup.png');
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mix-blend-mode: overlay;
+  opacity: var(--glint-opacity);
+  transition: opacity 0.4s ease;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {
@@ -269,6 +332,15 @@ body {
   /* A dot racing round the border is decoration, so drop it entirely
      rather than running it at 0.01ms. */
   .sheen-dot {
+    display: none;
+  }
+  /* Hold the lockup flat and unlit. The listener bails out under reduced
+     motion too, so this is belt and braces for a preference that changes
+     after the page has loaded. */
+  .lockup-tilt {
+    transform: none;
+  }
+  .lockup-glint {
     display: none;
   }
 }
